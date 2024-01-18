@@ -1,0 +1,62 @@
+### Einen Zulieferer mittels PUT aktualisieren
+PUT {{restUrl}}/3962c818-ce03-495c-a96f-06e92d40c7a5
+Content-Type: application/json
+
+< data/zulieferer-put.json
+
+> {%
+    client.test('Einen zulieferer mittels PUT aktualisieren: No Content (204)', () => {
+        const status = response.status;
+        client.assert(status === 204, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Einen zulieferer mittels PUT aktualisieren: leerer body', () => {
+        const body = response.body;
+        client.assert(body === null, `body: ${JSON.stringify(body)}`);
+    });
+%}
+
+### Einen nicht-vorhandenen zulieferern mittels PUT aktualisieren: 404 (Not Found)
+PUT {{restUrl}}/9d1bbee5-b505-47da-bbdc-eda643dc56c4
+Content-Type: application/json
+
+< data/zulieferer-put.json
+
+> {%
+    client.test('Einen zulieferer mittels PUT aktualisieren: Not Found (404)', () => {
+        const status = response.status;
+        client.assert(status === 404, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Einen zulieferer mittels PUT aktualisieren: leerer body', () => {
+        const body = response.body;
+        client.assert(body === null, `body: ${JSON.stringify(body)}`);
+    });
+%}
+
+
+### Einen Zulieferer mittels PUT aktualisieren und Email existiert: 422 (Unprocessable Entity)
+PUT {{restUrl}}/9d1bbee5-b505-47da-bbdc-eda643dc56c3
+Content-Type: application/json
+
+< data/zulieferer-put.json
+
+> {%
+    client.test('Einen Zulieferer mittels PUT aktualisieren und Email existiert: Unprocessable Entity (422)', () => {
+        const status = response.status;
+        client.assert(status === 422, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Einen Zulieferer mittels PUT aktualisieren und Email existiert: application/problem+json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === "application/problem+json", `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Einen Zulieferer mittels PUT aktualisieren und Email existiert: body mit ProblemDetail', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        const detail = body.detail;
+        client.assert(typeof detail === 'string', `body: ${JSON.stringify(body)}`);
+        client.assert(detail === 'Die Emailadresse alpha@acme.de existiert bereits', `detail: ${detail}`);
+    });
+%}

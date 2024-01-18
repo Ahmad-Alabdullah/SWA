@@ -1,0 +1,70 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Suche nach Zuliefererdaten"
+type Query {
+  "Suche Zuliefererdaten anhand der ID"
+  zulieferer(id: ID!): Zulieferer
+
+  "Suche Zuliefererdaten anhand des Nachnamens oder der Emailadresse"
+  zulieferern(input: Suchkriterien): [Zulieferer!]
+}
+
+type Mutation {
+  "Einen neuen Zuliefererdatensatz anlegen"
+  create(input: ZuliefererInput!): CreatePayload
+}
+
+# https://spec.graphql.org/draft/#sec-Types
+# https://www.graphql-scalars.dev/docs/scalars/email-address
+# https://www.graphql-scalars.dev/docs/scalars/local-date
+"Eigenschaften eines Zulieferer-Datensatzes mit untergeordneten Eigenschaften"
+type Zulieferer {
+  "ID des Zulieferers"
+  id: ID
+  "Nachname des Zulieferers"
+  name: String!
+  email: String!
+  baeckerId: ID!
+  filiale: Filiale!
+}
+
+# https://spec.graphql.org/draft/#sec-Input-Objects
+"Suchkriterien für die Query 'Zulieferern'"
+input Suchkriterien {
+  "Emailadresse der gesuchten Zulieferern"
+  email: String
+}
+
+"Eingabedaten für einen neuen Zulieferern"
+input ZuliefererInput {
+  "Nachname des neuen Zulieferern"
+  name: String!
+  "Emailadresse des neuen Zulieferern"
+  email: String!
+  "baeckerID"
+  baeckerId: ID!
+  "Filiale des neuen Zulieferern"
+  filiale: FilialeInput!
+}
+
+"Neue oder geänderte Adresse"
+input FilialeInput {
+  name: String!
+  standort: String!
+}
+
+type Filiale {
+  "Postleitzahl der Adresse"
+  name: String!
+  "Ortsangabe"
+  standort: String!
+}
+
+"Rückgabetyp beim Neuanlegen eines Zulieferers"
+type CreatePayload {
+  "ID des neu angelegten Zulieferers"
+  id: String!
+}

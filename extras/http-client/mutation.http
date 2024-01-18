@@ -1,0 +1,17 @@
+### Einen neuen Zulieferer anlegen
+GRAPHQL {{graphqlUrl}}
+
+mutation {
+  create(
+    input: {
+      name: "Graphqlreq"
+      email: "graphqlal@graphql.de"
+      baeckerId: "00000000-0000-0000-0000-000000000040"
+      filiale: {
+        name: "Road",
+        standort: "testOrt"}
+    }
+  ) {
+    id
+  }
+}

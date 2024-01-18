@@ -1,0 +1,283 @@
+### Suche mit vorhandener Zulieferer-ID als admin
+GRAPHQL {{graphqlUrl}}
+
+{
+  zulieferer(id: "3962c818-ce03-495c-a96f-06e92d40c7a4") {
+    name
+  }
+}
+> {%
+    client.test('Query mit ID und admin: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query mit ID und admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query mit ID und admin: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        // TODO Optional Chaining
+        const zulieferer = body.data.zulieferer;
+        client.assert(typeof zulieferer.nachname === 'string', `zulieferer: ${JSON.stringify(body.data.zulieferer)}`);
+    });
+%}
+
+### Suche mit nicht-vorhandener Zulieferer-ID als admin
+GRAPHQL {{graphqlUrl}}
+
+{
+  zulieferer(id: "ffffffff-ffff-ffff-ffff-ffffffffffff") {
+    name
+  }
+}
+> {%
+    client.test('Query mit nicht-vorhandener ID und admin: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query mit nicht-vorhandener ID und admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query mit nicht-vorhandener ID und admin: body mit Errors ohne Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        client.assert(typeof body.data === 'object', `body: ${JSON.stringify(body)}`);
+        client.assert(Object.keys(body.data).length === 0, `data: ${JSON.stringify(body.data)}`);
+        // TODO Optional Chaining
+        const errors = body.errors;
+        client.assert(Array.isArray(errors) === true, `errors: ${JSON.stringify(body.errors)}`);
+        client.assert(errors.length === 1, `errors: ${JSON.stringify(body.errors)}`);
+        client.assert(typeof errors[0].extensions.classification === 'string', `errors: ${JSON.stringify(errors)}`);
+        client.assert(errors[0].extensions.classification === 'NOT_FOUND', `errors: ${JSON.stringify(errors)}`);
+    });
+%}
+
+### Suche mit vorhandener zulieferer-ID als admin
+GRAPHQL {{graphqlUrl}}
+Authorization: Basic {{userAdmin}} {{password}}
+
+{
+  zulieferer(id: "00000000-0000-0000-0000-000000000001") {
+    nachname
+    email
+    kategorie
+    hasNewsletter
+    geburtsdatum
+    homepage
+    geschlecht
+    familienstand
+    interessen
+    umsatz {
+      betrag
+      waehrung
+    }
+    adresse {
+      plz
+      ort
+    }
+  }
+}
+> {%
+    client.test('Query mit ID und admin: OK', () => {
+      const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query mit ID und admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query mit ID und admin: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        // TODO Optional Chaining
+        const zulieferer = body.data.zulieferer;
+        client.assert(typeof zulieferer.nachname === 'string', `zulieferer: ${JSON.stringify(body.data.zulieferer)}`);
+        client.assert(typeof zulieferer.email === 'string', `zulieferer: ${JSON.stringify(body.data.zulieferer)}`);
+    });
+%}
+
+
+### Suche alle Zulieferer als admin
+GRAPHQL {{graphqlUrl}}
+
+{
+  zulieferern {
+    id
+    name
+    email
+    filiale {
+      name
+      standort
+    }
+  }
+}
+> {%
+    client.test('Query alle zulieferern als admin: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query alle zulieferern als admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query alle zulieferern als admin: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        // TODO Optional Chaining
+        const zulieferern = body.data.zulieferern;
+        client.assert(Array.isArray(zulieferern) === true, `data: ${JSON.stringify(body.data)}`);
+        client.assert(zulieferern.length > 0, `data: ${JSON.stringify(body.data)}`);
+    });
+%}
+
+### Suche zulieferer mit der Emailadresse als admin
+GRAPHQL {{graphqlUrl}}
+Authorization: Basic {{userAdmin}} {{password}}
+
+{
+  zulieferern(input: {email: "admin@acme.com"}) {
+    id
+    nachname
+    kategorie
+    hasNewsletter
+    geburtsdatum
+    homepage
+    geschlecht
+    familienstand
+    interessen
+    umsatz {
+      betrag
+      waehrung
+    }
+    adresse {
+      plz
+      ort
+    }
+  }
+}
+> {%
+    client.test('Query mit der Emailadresse als admin: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query mit der Emailadresse als admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query mit der Emailadresse als admin: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        // TODO Optional Chaining
+        const zulieferern = body.data.zulieferern;
+        client.assert(Array.isArray(zulieferern) === true, `data: ${JSON.stringify(body.data)}`);
+        client.assert(zulieferern.length === 1, `data: ${JSON.stringify(body.data)}`);
+        const zulieferer = zulieferern[0];
+        client.assert(typeof zulieferer.nachname === 'string', `zulieferer: ${JSON.stringify(zulieferer)}`);
+    });
+%}
+
+### Suche zulieferer mit nicht-vorhandener Emailadresse als admin
+GRAPHQL {{graphqlUrl}}
+Authorization: Basic {{userAdmin}} {{password}}
+
+{
+  zulieferern(input: {email: "nicht.vorhanden@acme.com"}) {
+    id
+  }
+}
+> {%
+    client.test('Query mit nicht-vorhandener Emailadresse und admin: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query mit nicht-vorhandener Emailadresse und admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query mit nicht-vorhandener Emailadresse und admin: body mit Errors ohne Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        client.assert(typeof body.data === 'object', `body: ${JSON.stringify(body)}`);
+        client.assert(Object.keys(body.data).length === 0, `data: ${JSON.stringify(body.data)}`);
+        // TODO Optional Chaining
+        const errors = body.errors;
+        client.assert(Array.isArray(errors) === true, `errors: ${JSON.stringify(body.errors)}`);
+        client.assert(errors.length === 1, `errors: ${JSON.stringify(body.errors)}`);
+        client.assert(typeof errors[0].extensions.classification === 'string', `errors: ${JSON.stringify(errors)}`);
+        client.assert(errors[0].extensions.classification === 'NOT_FOUND', `errors: ${JSON.stringify(errors)}`);
+    });
+%}
+
+### Suche zulieferern mit dem Nachnamen als admin
+GRAPHQL {{graphqlUrl}}
+Authorization: Basic {{userAdmin}} {{password}}
+
+{
+  zulieferern(input: {nachname: "a"}) {
+    id
+    nachname
+    email
+    kategorie
+    hasNewsletter
+    geburtsdatum
+    homepage
+    geschlecht
+    familienstand
+    interessen
+    umsatz {
+      betrag
+      waehrung
+    }
+    adresse {
+      plz
+      ort
+    }
+  }
+}
+> {%
+    client.test('Query mit dem Nachnamen als admin: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('Query mit dem Nachnamen als admin: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('Query mit dem Nachnamen als admin: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        // TODO Optional Chaining
+        const zulieferern = body.data.zulieferern;
+        client.assert(Array.isArray(zulieferern) === true, `data: ${JSON.stringify(body.data)}`);
+        client.assert(zulieferern.length > 0, `data: ${JSON.stringify(body.data)}`);
+        zulieferern.map(zulieferer => zulieferer.nachname)
+            .forEach(nachname => client.assert(nachname.includes('a') || nachname.startsWith('A'), `nachname: ${JSON.stringify(nachname)}`));
+    });
+%}
+
+### Suche zulieferern mit nicht-vorhandenem Nachnamen als admin
+GRAPHQL {{graphqlUrl}}
+Authorization: Basic {{userAdmin}} {{password}}
+
+{
+  zulieferern(input: {nachname: "Nichtvorhanden"}) {
+    id
+  }
+}

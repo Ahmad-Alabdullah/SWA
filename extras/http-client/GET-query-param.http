@@ -1,0 +1,25 @@
+### Suche mit vorhandener Email (mit URL Encoding)
+GET {{restUrl}}?email=hka@web.de
+Accept: application/hal+json
+
+> {%
+    client.test('GET mit vorhandener Email: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('GET mit vorhandener Email: application/hal+json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('GET mit vorhandener Email: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+        const zuliefererr = body._embedded.zuliefererr;
+        client.assert(Array.isArray(zuliefererr), `body: ${JSON.stringify(body)}`);
+        client.assert(zuliefererr.length === 1);
+        const zulieferer = zuliefererr[0];
+        client.assert(zulieferer.email === 'admin@acme.com', `body: ${JSON.stringify(body)}`);
+    });
+%}

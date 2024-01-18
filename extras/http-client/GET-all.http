@@ -1,0 +1,23 @@
+// https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html
+// https://www.jetbrains.com/help/idea/http-response-handling-examples.html#checking-response-headers-body
+
+### Suche alle Zulieferer (<Strg><Click> fuer Web Browser)
+GET {{restUrl}}
+Accept: application/hal+json
+
+> {%
+    client.test('GET: OK', () => {
+      const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('GET: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('GET: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+    });
+%}

@@ -1,0 +1,96 @@
+@startuml ZuliefererReadService
+
+skinparam classAttributeIconSize 0
+
+package org.springframework.stereotype {
+    interface Service
+}
+
+package org.springframework{
+    package graphql.client{
+        class FieldAccessException
+        class GraphQlTransportException
+        class HttpGraphQlClient
+    }
+    package http{
+        class ResponseEntity
+    }
+    package transaction.annotation{
+        interface Transactional
+    }
+    package web.reactive.function.client{
+        class WebClientException
+        class WebClientResponseException
+    }
+}
+
+package jakarta.validation.constraints{
+    interface NotNull
+}
+
+package lombock{
+    interface NotNull
+    interface RequiredArgsConstructor
+    package extern.slf4j{
+        interface slf4j
+    }
+}
+
+package java.util {
+    interface List<T>
+    interface Map<K,V>
+    class UUID
+
+    UUID .left[hidden].> Service
+}
+
+package zspace.zulieferer {
+    package entity {
+        class Zulieferer << entity >>
+
+        Zulieferer .up[hidden].> List
+    }
+
+    package repository {
+        class ZuliefererRepository << control >> << @Repository >>
+        class Baecker << record >>
+        class BaeckerRestRepository <<@Repository>>
+        class PredicateBuilder
+    }
+
+    package service #DDDDDD {
+        class ZuliefererReadService << control >> << @Service >> {
+            + findById(id: UUID): Zulieferer
+            + find(queryParams: Map<String, String>): List<Zulieferer>
+        }
+
+        ZuliefererReadService o--> ZuliefererRepository : repo
+        ZuliefererReadService .right.> Zulieferer
+        ZuliefererReadService .up.> Service
+        ZuliefererReadService .up.> UUID
+        ZuliefererReadService .up> List
+        ZuliefererReadService .up.> Map
+        ZuliefererReadService .left.> WebClientException
+        ZuliefererReadService .left.> WebClientResponseException
+        ZuliefererReadService .left.> Transactional
+        ZuliefererReadService .left.> ResponseEntity
+        ZuliefererReadService .left.> GraphQlTransportException
+        ZuliefererReadService .left.> FieldAccessException
+        ZuliefererReadService .left.> HttpGraphQlClient
+        ZuliefererReadService .left.> NotNull
+        ZuliefererReadService .left.> RequiredArgsConstructor
+        ZuliefererReadService .left.> slf4j
+        ZuliefererReadService .left.> jakarta.validation.constraints.NotNull
+        ZuliefererReadService .left.> lombock.extern.slf4j.slf4j
+        ZuliefererReadService .left.> lombock.NotNull
+        ZuliefererReadService .down.> Baecker
+        ZuliefererReadService .down.> BaeckerRestRepository
+        ZuliefererReadService .down.> PredicateBuilder
+    }
+}
+
+hide empty members
+
+footer (c) Ahmad Alabdullah
+
+@enduml

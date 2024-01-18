@@ -1,0 +1,8 @@
+{
+  "name": "Hka",
+  "email": "testtast@web.de",
+  "filiale": {
+    "name": "f1",
+    "standort": "testOrt"
+  }
+}

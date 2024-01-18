@@ -1,0 +1,125 @@
+@startuml Zulieferer
+
+skinparam classAttributeIconSize 0
+' skinparam monochrome true
+
+package java {
+    package util {
+        class UUID
+    }
+  }
+
+  package querydsl {
+      package core {
+          package annotations{
+              class QueryEntity
+        }
+      }
+    }
+
+package jakarta {
+    package validation {
+      package constraints {
+          class NotNull
+          class Pattern
+          class email
+          class Size
+      }
+    }
+  }
+
+  package jakarta {
+      package persistence {
+            class Column
+            class Entity
+            class GeneratedValue
+            class Id
+            class NamedAttributeNode
+            class NamedEntityGraph
+            class OneToOne
+            class Table
+            class Transient
+            class Version
+            package CascadeType{
+                enum PERSIST
+                enum REMOVE
+            }
+            package FetchType{
+                enum LAZY
+            }
+      }
+    }
+
+    package lombok {
+            interface Builder
+            interface EqualsAndHashCode
+            interface Getter
+            interface Setter
+            interface ToString
+            interface AllArgsConstructor
+            interface NoArgsConstructor
+        }
+
+    package org{
+        package hibernate{
+            package annotations{
+                interface CreationTimestamp
+                interface UpdateTimestamp
+            }
+        }
+    }
+
+package zspace.zulieferer.entity #DDDDDD {
+    class Filiale {
+        name: String
+        standort: String
+    }
+
+    class zulieferer << entity >> {
+        id : UUID
+        name : String
+        email : String
+    }
+
+    zulieferer *--> "0..1" Filiale : filiale
+
+    zulieferer ..> UUID
+
+    zulieferer ..> Builder
+    zulieferer ..> EqualsAndHashCode
+    zulieferer ..> Getter
+    zulieferer ..> Setter
+    zulieferer ..> ToString
+
+    zulieferer ..> Pattern
+    zulieferer ..> NotNull
+
+    zulieferer ..> QueryEntity
+    zulieferer ..> Size
+    zulieferer ..> Column
+    zulieferer ..> Entity
+    zulieferer ..> GeneratedValue
+    zulieferer ..> Id
+    zulieferer ..> NamedAttributeNode
+    zulieferer ..> NamedEntityGraph
+    zulieferer ..> OneToOne
+    zulieferer ..> Table
+    zulieferer ..> Transient
+    zulieferer ..> Version
+    zulieferer ..> REMOVE
+    zulieferer ..> LAZY
+    zulieferer ..> PERSIST
+    zulieferer ..> email
+
+    zulieferer ..> AllArgsConstructor
+    zulieferer ..> NoArgsConstructor
+
+    zulieferer ..> CreationTimestamp
+    zulieferer ..> UpdateTimestamp
+}
+
+hide empty members
+
+footer (c) Ahmad Alabdullah
+
+@enduml

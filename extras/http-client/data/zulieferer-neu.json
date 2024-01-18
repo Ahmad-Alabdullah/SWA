@@ -1,0 +1,9 @@
+{
+  "name": "Testtesty",
+  "email": "hkaabc@web.de",
+  "baeckerId": "00000000-0000-0000-0000-000000000001",
+  "filiale": {
+    "name": "Force",
+    "standort": "testOrt"
+  }
+}

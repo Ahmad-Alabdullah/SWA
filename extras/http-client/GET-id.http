@@ -1,0 +1,40 @@
+// https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html
+// https://www.jetbrains.com/help/idea/exploring-http-syntax.html
+// https://www.jetbrains.com/help/idea/http-response-handling-examples.html#checking-response-headers-body
+
+### Suche mit vorhandener zulieferer-ID
+GET {{restUrl}}/91f60ba8-d87e-4b0f-ad74-22290425e38d
+Accept: application/hal+json
+
+> {%
+    client.test('GET mit ID: OK', () => {
+        const status = response.status;
+        client.assert(status === 200, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('GET mit ID: application/json', () => {
+        const mimeType = response.contentType.mimeType;
+        client.assert(mimeType === 'application/json', `Falscher MIME-Typ: ${mimeType}`);
+    });
+
+    client.test('GET mit ID: body mit Daten', () => {
+        const body = response.body;
+        client.assert(typeof body === 'object', `body: ${JSON.stringify(body)}`);
+    });
+%}
+
+### Suche mit nicht-vorhandener zulieferer-ID: 404 (Not Found)
+GET {{restUrl}}/ffffffff-ffff-ffff-ffff-ffffffffffff
+Authorization: Basic {{userAdmin}} {{password}}
+
+> {%
+    client.test('GET mit nicht-vorhandener zulieferer-ID: Not Found', () => {
+        const status = response.status;
+        client.assert(status === 404, `Falscher Statuscode: ${status}`);
+    });
+
+    client.test('GET mit nicht-vorhandener zulieferer-ID: leerer Body', () => {
+        const body = response.body;
+        client.assert(body === null, `body: ${JSON.stringify(body)}`);
+    });
+%}

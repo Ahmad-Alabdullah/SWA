@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"Alle Packages","u":"allpackages-index.html"},{"l":"zspace.zulieferer"},{"l":"zspace.zulieferer.entity"},{"l":"zspace.zulieferer.repository"},{"l":"zspace.zulieferer.rest"},{"l":"zspace.zulieferer.service"}];updateSearchResults();

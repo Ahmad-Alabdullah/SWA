@@ -1,0 +1,31 @@
+@startuml ER Diagramm
+
+' hide the spot
+hide circle
+
+' evtl. Prbleme mit Kraehenfuessen vermeiden
+skinparam linetype ortho
+
+entity "Zulieferer" {
+  * id : UUID <<generated>>
+  --
+  * version: integer
+  * name : text
+  * email : text <<unique>>
+  * erzeugt: timestamp
+  * aktualisiert: timestamp
+}
+
+entity "Filiale" {
+  * id : UUID <<generated>>
+  --
+  * name : text
+  * standort : text
+  * Zulieferer_id: UUID <<FK>>
+}
+
+Zulieferer ||.left.|| Filiale
+
+footer (c) Ahmad Alabdullah
+
+@enduml

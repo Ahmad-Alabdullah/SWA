@@ -1,0 +1,90 @@
+@startuml zuliefererGetController
+
+skinparam classAttributeIconSize 0
+
+package org.springframework {
+    package web.bind.annotation {
+        interface "@RestController" as RestController
+        interface "@RequestMapping" as RequestMapping
+        interface "@PathVariable" as PathVariable
+        interface "@RequestParam" as RequestParam
+        interface "@ExceptionHandler" as ExceptionHandler
+        interface "@ResponseStatus" as ResponseStatus
+        interface "@GetMapping" as GetMapping
+    }
+
+    package http {
+        class ResponseEntity<T>
+    }
+    package hateoas {
+        class CollectionModel<E>
+    }
+    package util {
+        class MultiValueMap<K,V>
+    }
+}
+
+package io.swagger.v3.oas.annotations {
+    interface OpenAPIDefinition
+    interface Operation
+    interface Info
+    interface ApiResponse
+}
+
+package jakarta.servlet.http {
+    interface HttpServletRequest
+}
+
+package java.util {
+    class UUID
+    UUID .up[hidden].> HttpServletRequest
+}
+
+package zspace.zulieferer {
+    package service {
+        class zuliefererReadService << control >> << @Service >>
+        class NotFoundException
+    }
+
+    package rest #DDDDDD {
+        class zuliefererModel <<entity>>
+
+        class zuliefererGetController << boundary >> << @RestController >> << @RequestMapping >> {
+            + @GetMapping getById(@PathVariable id: UUID, version: String, request: HttpServletRequest): zuliefererModel
+            + @GetMapping get(@RequestParam queryParams: MultiValueMap<String, String>, request: HttpServletRequest): CollectionModel<zuliefererModel>
+            + @ExceptionHandler onNotFound(ex: NotFoundException, request: HttpServletRequest): ProblemDetail
+            + zuliefererToModel(zulieferer: Zulieferer, request: HttpServletRequest): ZuliefererModel
+        }
+
+        zuliefererGetController o--> "1" zuliefererReadService : service
+        zuliefererGetController ..> zuliefererModel
+        zuliefererGetController ..> NotFoundException
+
+        zuliefererGetController .up.> RestController
+        zuliefererGetController .up.> RequestMapping
+        zuliefererGetController .up.> PathVariable
+        zuliefererGetController .up.> ExceptionHandler
+        zuliefererGetController .up.> ResponseStatus
+        zuliefererGetController .up.> RequestParam
+        zuliefererGetController .up.> ResponseEntity
+        zuliefererGetController .up.> MultiValueMap
+        zuliefererGetController .up.> CollectionModel
+        zuliefererGetController .right.> HttpServletRequest
+        zuliefererGetController .up.> GetMapping
+
+        zuliefererGetController .up.> OpenAPIDefinition
+        zuliefererGetController .up.> Operation
+        zuliefererGetController .up.> Info
+        zuliefererGetController .up.> ApiResponse
+
+        zuliefererGetController .right.> UUID
+
+        zuliefererModel .[hidden].> zuliefererReadService
+    }
+}
+
+hide empty members
+
+footer (c) Ahmad Alabdullah
+
+@enduml
